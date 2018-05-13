@@ -5,17 +5,19 @@ import {
   renderComponent,
   withReducer,
   withHandlers,
-  withProps,
 } from 'recompose';
-import Questionnaire, { LoadingView } from './questionnaire';
+import Questionnaire, { LoadingView, StartingView } from './questionnaire';
+import Results from './results';
 import { answer, unAnswer, addQuestions, pickQuestion } from './questionnaire.actions';
 import QuestionnaireReducer, {
   initialState,
   selectCurrentQuestion,
-  selectRandomUnansweredQuestion
+  selectQuestions,
+  selectUnansweredQuestions
 } from './questionnaire.reducer';
+import { randomize } from '../../utils';
 
-import { getQuestions, getAnswer } from '../../api/questionnaire';
+import { getQuestions, validateAnswer } from '../../api/questionnaire';
 
 const QuestionnaireContainer = compose(
   withReducer('questionnaire', 'dispatch', QuestionnaireReducer, initialState),
@@ -25,28 +27,49 @@ const QuestionnaireContainer = compose(
 
       getQuestions().then((questions) => {
         dispatch(addQuestions(questions));
-        // TODO: select first question
-        dispatch(pickQuestion(questions[0].id));
       });
     }
   }),
   withHandlers({
-    onAnswerSelected: ({ dispatch, questionnaire }) => (value) => {
+    gotoNextQuestion: ({ dispatch, questionnaire }) => () => {
+      const questions = selectUnansweredQuestions(questionnaire);
+      const randomQuestion = randomize(questions).pop();
+
+      if (!randomQuestion) {
+        // goto result page
+      } else {
+        dispatch(pickQuestion(randomQuestion.id));
+      }
+    },
+  }),
+  withHandlers({
+    answerSelectedHandler: ({ dispatch, questionnaire, gotoNextQuestion }) => (value) => {
       const question = selectCurrentQuestion(questionnaire);
 
+      console.count('answered');
+
       dispatch(answer({ questionId: question.id, answer: value }));
+      gotoNextQuestion();
     },
-    onTimeout: ({ dispatch, questionnaire }) => () => {
+    timeoutHandler: ({ dispatch, questionnaire, gotoNextQuestion }) => () => {
       // TODO: select next question
       const question = selectCurrentQuestion(questionnaire);
 
       dispatch(unAnswer(question.id));
-      dispatch(pickQuestion(selectRandomUnansweredQuestion(questionnaire).id));
+      gotoNextQuestion();
     }
   }),
   branch(
-    (props) => !selectCurrentQuestion(props.questionnaire),
+    (props) => selectQuestions(props.questionnaire).length === 0,
     renderComponent(LoadingView)
+  ),
+  branch(
+    (props) => !selectCurrentQuestion(props.questionnaire),
+    renderComponent(StartingView)
+  ),
+  branch(
+    (props) => selectUnansweredQuestions(props.questionnaire).length === 0,
+    renderComponent(Results)
   )
 )(Questionnaire);
 

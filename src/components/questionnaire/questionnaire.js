@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import {
+  selectAnswers,
   selectCurrentGivenAnswer,
   selectCurrentQuestion,
   selectCurrentStartTime,
@@ -11,21 +11,33 @@ import Question from './question';
 import Counter from '../counter';
 
 export default (props) => {
-  const { onAnswerSelected, onTimeout, questionnaire } = props;
+  const { answerSelectedHandler, timeoutHandler, questionnaire } = props;
   const question = selectCurrentQuestion(questionnaire);
   const givenAnswer = selectCurrentGivenAnswer(questionnaire);
   const startTime = selectCurrentStartTime(questionnaire);
+  const answersCount = Object.keys(selectAnswers(questionnaire)).length;
 
   return (
     <div className="questionnaire">
-      <Counter startTime={startTime} timeout={15} onTimeout={onTimeout} />
+      <span>#{answersCount + 1}</span>
+      <Counter startTime={startTime} timeout={15} onTimeout={timeoutHandler} />
       <Question
         question={question}
-        onAnswerSelected={onAnswerSelected}
+        onAnswerSelected={answerSelectedHandler}
         selectedAnswer={givenAnswer && givenAnswer.answer}
       />
     </div>
   )
+};
+
+export const StartingView = ({
+  gotoNextQuestion
+}) => {
+  return (
+    <div className="questionnaire">
+      <button onClick={gotoNextQuestion}>Start</button>
+    </div>
+  );
 };
 
 export const LoadingView = () => {

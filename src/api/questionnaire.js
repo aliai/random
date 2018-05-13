@@ -1,28 +1,24 @@
-export const getQuestions = () => {
-  return Promise.resolve([
-    {
-      id: 1,
-      question: 'question 1',
-      options: [
-        { value: 'foo', label: 'foo' },
-        { value: 'bar', label: 'bar' },
-        { value: 'baz', label: 'baz' },
-        { value: 'yad', label: 'yad' },
-      ],
-    },
-    {
-      id: 2,
-      question: 'question 2',
-      options: [
-        { value: 'foo', label: 'foo' },
-        { value: 'bar', label: 'bar' },
-        { value: 'baz', label: 'baz' },
-        { value: 'yad', label: 'yad' },
-      ],
-    }
-  ]);
-}
+import { randomize } from '../utils';
 
-export const getAnswer = (questionId, answer) => {
-  return Promise.resolve(Math.random() * .5 < .5);
+export const getQuestions = async ({
+  amount = 2,
+  difficulty = 'hard',
+} = {}) => {
+  const resp = await fetch(`https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}&type=multiple`);
+
+  if (resp.status !== 200) return Promise.reject('Cannot connect to the server :(');
+
+  const json = await resp.json();
+
+  return json.results
+    .map(({ question, correct_answer, incorrect_answers }, index) => ({
+      id: index,
+      question: question,
+      correctAnswer: correct_answer,
+      options: randomize([...incorrect_answers, correct_answer])
+        .map(answer => ({
+          value: answer,
+          label: answer,
+        }))
+    }))
 }

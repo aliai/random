@@ -7,21 +7,20 @@ import {
 export const initialState = {
   currentQuestionId: undefined,
   currentQuestionStartTime: undefined,
-  givenAnswers: undefined,
-  questions: undefined,
+  givenAnswers: {},
+  questions: [],
 };
 
-export const selectRandomUnansweredQuestion = (state) => {
-  // typically this must be coming from the api; however, since we have a pool of questions
-  // on the client, we will choose the next question
-  return state.questions && state.questions
-    .filter(question => !state.givenAnswers[question.id])
-    .sort(() => Math.random() * 2 - 1)
-    .pop()
+export const selectQuestions = (state) => {
+  return state.questions;
+}
+
+export const selectUnansweredQuestions = (state) => {
+  return selectQuestions(state).filter(question => !state.givenAnswers[question.id]);
 }
 
 export const selectCurrentQuestion = (state) => {
-  return state.questions && state.questions.find(question => question.id === state.currentQuestionId);
+  return selectQuestions(state).find(question => question.id === state.currentQuestionId);
 }
 
 export const selectCurrentGivenAnswer = (state) => {
@@ -33,9 +32,12 @@ export const selectCurrentStartTime = (state) => {
 }
 
 export const selectGivenAnswer = (state, questionId) => {
-  return state.givenAnswers && state.givenAnswers[questionId];
+  return selectAnswers(state)[questionId];
 }
 
+export const selectAnswers = (state) => {
+  return state.givenAnswers;
+}
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -48,7 +50,7 @@ export default (state = initialState, action) => {
           ...state.givenAnswers,
           [questionId]: {
             answer,
-            time: new Date().getTime()
+            answeredTime: new Date().getTime() - state.currentQuestionStartTime
           }
         }
       };
@@ -70,5 +72,7 @@ export default (state = initialState, action) => {
         questions
       }
     }
+    default:
+      return state;
   }
 }
