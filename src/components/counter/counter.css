@@ -1,0 +1,35 @@
+.count-down-circle {
+  --size: 50px;
+
+  display: inline-block;
+  position: relative;
+  height: var(--size);
+  width: var(--size);
+  line-height: var(--size);
+  text-align: center;
+}
+
+.count-down-circle.timeout::before {
+  animation-play-state: paused;
+}
+
+.count-down-circle::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  border-style: dashed;
+  animation: counter-spin 6s linear infinite;
+  transition: color 1s;
+  will-change: border-color, transform, color;
+}
+
+@keyframes counter-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

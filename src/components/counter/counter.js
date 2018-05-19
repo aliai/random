@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import getColor from './counter-color';
+import './counter.css';
 
 export default class extends React.Component {
   static propTypes = {
     startTime: PropTypes.number.isRequired,
     timeout: PropTypes.number.isRequired,
+    onTimeout: PropTypes.func,
   }
 
   componentDidMount() {
@@ -38,10 +41,16 @@ export default class extends React.Component {
   }
 
   render() {
-    const fixedReminder = this.reminder.toFixed(1);
+    const reminder = this.reminder;
+    const fixedReminder = reminder.toFixed(1);
+    const className = ['count-down-circle', (reminder === 0 ? 'timeout' : '')].join(' ');
+    const color = getColor(reminder);
 
     return (
-      <div>{fixedReminder}</div>
+      <div
+        className={className}
+        style={{ color }}
+      >{fixedReminder}</div>
     );
   }
 }
