@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './questionnaire.css';
+
 import {
   selectAnswers,
   selectCurrentGivenAnswer,
@@ -19,8 +21,10 @@ export default (props) => {
 
   return (
     <div className="questionnaire">
-      <span>#{answersCount + 1}</span>
-      <Counter startTime={startTime} timeout={15} onTimeout={timeoutHandler} />
+      <section className="heading">
+        <h3>Question {answersCount + 1}:</h3>
+        <Counter startTime={startTime} timeout={15} onTimeout={timeoutHandler} />
+      </section>
       <Question
         question={question}
         onAnswerSelected={answerSelectedHandler}

@@ -1,0 +1,10 @@
+.questionnaire {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
