@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './question.css';
 
 const Question = ({
   question,
@@ -16,17 +17,11 @@ const Question = ({
 
   return (
     <section className="question-box">
-      <div className="question">{question.question}</div>
+      <div>{question.question}</div>
       <div className="options">
-        {question.options.map(option => (
-          <label key={option.value}>
-            <input
-              type="radio"
-              name="answer"
-              value={option.value}
-              checked={selectedAnswer === option.value}
-              onChange={onChangeHandler}
-            /> {option.label}
+        {question.options.map(({ label, value }) => (
+          <label className="option" key={value} onClick={() => onAnswerSelected(value)}>
+            {label}
           </label>
         ))}
       </div>
