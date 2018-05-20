@@ -39,19 +39,17 @@ const QuestionnaireContainer = compose(
   }),
   withHandlers({
     gotoNextQuestion: ({ dispatch, questionnaire }) => () => {
-      const questions = selectUnansweredQuestions(questionnaire);
+      const currentQuestion = selectCurrentQuestion(questionnaire);
+      const questions = selectUnansweredQuestions(questionnaire)
+        .filter(q => q !== currentQuestion);
       const randomQuestion = randomize(questions).pop();
 
-      if (randomQuestion) {
-        dispatch(pickQuestion(randomQuestion.id));
-      }
+      dispatch(pickQuestion(randomQuestion && randomQuestion.id));
     },
   }),
   withHandlers({
     answerSelectedHandler: ({ dispatch, questionnaire, gotoNextQuestion }) => (value) => {
       const question = selectCurrentQuestion(questionnaire);
-
-      console.count('answered');
 
       dispatch(answer({ questionId: question.id, answer: value }));
       gotoNextQuestion();
@@ -74,13 +72,13 @@ const QuestionnaireContainer = compose(
     renderComponent(LoadingView)
   ),
   branch(
+    (props) => selectUnansweredQuestions(props.questionnaire).length === 0,
+    renderComponent(Results)
+  ),
+  branch(
     (props) => !selectCurrentQuestion(props.questionnaire),
     renderComponent(StartingView)
   ),
-  branch(
-    (props) => selectUnansweredQuestions(props.questionnaire).length === 0,
-    renderComponent(Results)
-  )
 )(Questionnaire);
 
 export default QuestionnaireContainer;

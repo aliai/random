@@ -108,7 +108,9 @@ export default (state = initialState, action) => {
             ...question,
             options: [
               question.options.find(option => option.value === question.correctAnswer),
-              randomize(question.options).pop()
+              randomize(
+                question.options.filter(option => option.value !== question.correctAnswer)
+              ).pop()
             ]
           }
         ]
