@@ -6,16 +6,7 @@ const Question = ({
   question,
   onAnswerSelected,
   selectedAnswer,
-}) => {
-  const onChangeHandler = (event) => {
-    const { checked, value } = event.target;
-
-    if (checked) {
-      onAnswerSelected(value);
-    }
-  }
-
-  return (
+}) => (
     <section className="question-box">
       <div>{question.question}</div>
       <div className="options">
@@ -26,8 +17,7 @@ const Question = ({
         ))}
       </div>
     </section>
-  )
-};
+  );
 
 Question.propTypes = {
   question: PropTypes.shape({

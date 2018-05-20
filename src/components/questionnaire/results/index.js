@@ -1,1 +1,1 @@
-export { default } from './results';
+export { default as withResultPage } from './withResultPage';
