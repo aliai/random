@@ -1,7 +1,21 @@
 .questionnaire {
+  font-family: Roboto,'Helvetica Neue',Arial,sans-serif;
   max-width: 700px;
   margin: 0 auto;
   padding: 10px;
+}
+
+.questionnaire button {
+  -webkit-appearance: none;
+  padding: .5em 1em;
+  margin: 0 5px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.questionnaire button:hover {
+  background-color: #aaa;
 }
 
 .heading {

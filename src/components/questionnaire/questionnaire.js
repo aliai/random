@@ -51,11 +51,16 @@ export default (props) => {
 };
 
 export const StartingView = ({
-  gotoNextQuestion
+  loadQuestions
 }) => {
   return (
     <div className="questionnaire">
-      <button onClick={gotoNextQuestion}>Start</button>
+      <p>
+        How confident are you about computers?
+      </p>
+      <button onClick={() => loadQuestions('easy')}>👶🏻 Please don't hurt me</button>
+      <button onClick={() => loadQuestions('medium')}>🤓 Lagom</button>
+      <button onClick={() => loadQuestions('hard')}>👻 Bring it on</button>
     </div>
   );
 };

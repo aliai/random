@@ -1,7 +1,8 @@
 import {
   QUESTIONNAIR_ANSWER,
   QUESTIONNAIR_QUESTION_PICK,
-  QUESTIONNAIR_QUESTIONS_ADD,
+  QUESTIONNAIR_QUESTIONS_SUCCESS,
+  QUESTIONNAIR_QUESTIONS_FETCH,
   QUESTIONNAIR_LIFELINE_10_SEC,
   QUESTIONNAIR_LIFELINE_50_50,
 } from './questionnaire.const';
@@ -14,12 +15,15 @@ export const initialState = {
     removeHalf: false,
     add10sec: false,
   },
+  loading: false,
   givenAnswers: {},
   questions: [],
 };
 
 export const selectUsedLifelineAdd10Sec = state => state.lifeline.add10sec;
 export const selectUsedLifelineRemoveHalf = state => state.lifeline.removeHalf;
+
+export const isLoading = state => state.loading;
 
 export const selectQuestions = (state) => {
   return state.questions;
@@ -75,11 +79,18 @@ export default (state = initialState, action) => {
         currentQuestionStartTime: new Date().getTime()
       }
     }
-    case QUESTIONNAIR_QUESTIONS_ADD: {
+    case QUESTIONNAIR_QUESTIONS_FETCH: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case QUESTIONNAIR_QUESTIONS_SUCCESS: {
       const { payload: questions } = action;
 
       return {
         ...state,
+        loading: false,
         questions
       }
     }
