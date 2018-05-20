@@ -1,4 +1,7 @@
-import reducer, { initialState, selectCurrentQuestion } from './questionnaire.reducer';
+import questionnaireReducer, {
+  initialState,
+  selectCurrentQuestion
+} from './questionnaire.reducer';
 import {
   addQuestions,
   pickQuestion,
@@ -25,7 +28,7 @@ describe('questionnaire reducer', () => {
       lifelineRemoveHalfOptions()
     );
     const question = selectCurrentQuestion(state);
-    const options = selectCurrentQuestion(state);
+    const options = selectCurrentQuestion(state).options;
 
     expect(options.length).toBe(2);
     expect(options.find(o => o.value === question.correctAnswer)).not.toBeUndefined();
@@ -33,5 +36,5 @@ describe('questionnaire reducer', () => {
 });
 
 const reduce = (...actions) => {
-  actions.reduce((state, action) => reducer(state, action), initialState);
+  return actions.reduce((state, action) => questionnaireReducer(state, action), initialState);
 };
