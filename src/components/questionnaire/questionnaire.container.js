@@ -8,7 +8,14 @@ import {
 } from 'recompose';
 import Questionnaire, { LoadingView, StartingView } from './questionnaire';
 import Results from './results';
-import { answer, unAnswer, addQuestions, pickQuestion } from './questionnaire.actions';
+import {
+  answer,
+  unAnswer,
+  addQuestions,
+  pickQuestion,
+  lifelineAdd10sec,
+  lifelineRemoveHalfOptions,
+} from './questionnaire.actions';
 import QuestionnaireReducer, {
   initialState,
   selectCurrentQuestion,
@@ -35,9 +42,7 @@ const QuestionnaireContainer = compose(
       const questions = selectUnansweredQuestions(questionnaire);
       const randomQuestion = randomize(questions).pop();
 
-      if (!randomQuestion) {
-        // goto result page
-      } else {
+      if (randomQuestion) {
         dispatch(pickQuestion(randomQuestion.id));
       }
     },
@@ -52,11 +57,16 @@ const QuestionnaireContainer = compose(
       gotoNextQuestion();
     },
     timeoutHandler: ({ dispatch, questionnaire, gotoNextQuestion }) => () => {
-      // TODO: select next question
       const question = selectCurrentQuestion(questionnaire);
 
       dispatch(unAnswer(question.id));
       gotoNextQuestion();
+    },
+    lifelineRemoveHalfOptions: ({ dispatch }) => () => {
+      dispatch(lifelineRemoveHalfOptions());
+    },
+    lifelineAdd10sec: ({ dispatch }) => () => {
+      dispatch(lifelineAdd10sec());
     }
   }),
   branch(

@@ -1,10 +1,25 @@
 .questionnaire {
   max-width: 700px;
   margin: 0 auto;
+  padding: 10px;
 }
 
 .heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.lifeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.lifeline > * {
+  padding: .5em;
+  margin: 1px;
+  background-color: lightgreen;
+  cursor: pointer;
 }

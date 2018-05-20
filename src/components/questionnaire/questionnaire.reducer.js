@@ -2,14 +2,24 @@ import {
   QUESTIONNAIR_ANSWER,
   QUESTIONNAIR_QUESTION_PICK,
   QUESTIONNAIR_QUESTIONS_ADD,
+  QUESTIONNAIR_LIFELINE_10_SEC,
+  QUESTIONNAIR_LIFELINE_50_50,
 } from './questionnaire.const';
+import { randomize } from '../../utils';
 
 export const initialState = {
   currentQuestionId: undefined,
   currentQuestionStartTime: undefined,
+  lifeline: {
+    removeHalf: false,
+    add10sec: false,
+  },
   givenAnswers: {},
   questions: [],
 };
+
+export const selectUsedLifelineAdd10Sec = state => state.lifeline.add10sec;
+export const selectUsedLifelineRemoveHalf = state => state.lifeline.removeHalf;
 
 export const selectQuestions = (state) => {
   return state.questions;
@@ -20,7 +30,8 @@ export const selectUnansweredQuestions = (state) => {
 }
 
 export const selectCurrentQuestion = (state) => {
-  return selectQuestions(state).find(question => question.id === state.currentQuestionId);
+  return selectUnansweredQuestions(state)
+    .find(question => question.id === state.currentQuestionId);
 }
 
 export const selectCurrentGivenAnswer = (state) => {
@@ -70,6 +81,37 @@ export default (state = initialState, action) => {
       return {
         ...state,
         questions
+      }
+    }
+    case QUESTIONNAIR_LIFELINE_10_SEC: {
+      return {
+        ...state,
+        lifeline: {
+          ...state.lifeline,
+          add10sec: true,
+        },
+        currentQuestionStartTime: state.currentQuestionStartTime + 10000
+      }
+    }
+    case QUESTIONNAIR_LIFELINE_50_50: {
+      const question = selectCurrentQuestion(state);
+
+      return {
+        ...state,
+        lifeline: {
+          ...state.lifeline,
+          removeHalf: true,
+        },
+        questions: [
+          ...state.questions.filter(q => q.id !== state.currentQuestionId),
+          {
+            ...question,
+            options: [
+              question.options.find(option => option.value === question.correctAnswer),
+              randomize(question.options).pop()
+            ]
+          }
+        ]
       }
     }
     default:

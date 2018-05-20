@@ -2,6 +2,8 @@ import {
   QUESTIONNAIR_ANSWER,
   QUESTIONNAIR_QUESTION_PICK,
   QUESTIONNAIR_QUESTIONS_ADD,
+  QUESTIONNAIR_LIFELINE_10_SEC,
+  QUESTIONNAIR_LIFELINE_50_50,
 } from './questionnaire.const';
 
 export const answer = ({
@@ -26,3 +28,6 @@ export const pickQuestion = (questionId) => ({
   type: QUESTIONNAIR_QUESTION_PICK,
   payload: questionId
 });
+
+export const lifelineAdd10sec = () => ({ type: QUESTIONNAIR_LIFELINE_10_SEC });
+export const lifelineRemoveHalfOptions = () => ({ type: QUESTIONNAIR_LIFELINE_50_50 });
